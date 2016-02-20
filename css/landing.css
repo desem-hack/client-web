@@ -1,0 +1,58 @@
+@import 'var';
+
+.container {
+  composes: container from "./style.css";
+  padding: 50px 0 0;
+
+  $w: 360px;
+  @media (min-width: $w + 1px) {
+    width: $w;
+  }
+}
+
+.h6 {
+  padding-bottom: 20px;
+}
+
+.me {
+  composes: me from "./style.css";
+  $me-width: 160px;
+  width: $me-width !important;
+  border-radius: $me-width / 2 !important;
+  margin-left: -45px !important;
+  margin-top: 0px !important;
+
+  @media (max-width: $mobile-width) {
+    $me-width: 100px;
+    width: $me-width !important;
+    border-radius: $me-width / 2 !important;
+    margin-left: 0px !important;
+  }
+}
+
+.links {
+  font-size: 2em;
+  text-transform: uppercase;
+
+  a {
+    display: inline-block;
+    transition: all 0.5s ease-in-out;
+    color: #ddd;
+    border-width: 0 0 3px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0);
+
+    &:hover {
+      margin-bottom: 30px;
+      padding: 20px 0;
+      color: #000;
+      border-color: rgba(0, 0, 0, 1);
+      letter-spacing: 3px;
+    }
+  }
+}
+
+.copyright {
+  font-size: 12px !important;
+  color: #ccc;
+}
