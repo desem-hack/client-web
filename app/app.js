@@ -5,6 +5,7 @@ import { Router, Route, Link } from 'react-router';
 import $ from 'jquery';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import style from './../css/style.css';
+import { GoogleMapLoader, GoogleMap, Marker } from 'react-google-maps';
 // TODO Add Immutable
 
 const App = React.createClass({
@@ -21,7 +22,15 @@ const App = React.createClass({
       <div>
         <h1>St Night Bus</h1>
         <div className={style.mapWrapper}>
-          <div id="map" className={style.map}></div>
+          <GoogleMapLoader
+            containerElement={<div className={style.map} />}
+            googleMapElement={
+              <GoogleMap
+                defaultZoom={14}
+                defaultCenter={{lat: 56.3412378, lng: -2.7953315}}
+              />
+            }
+          />
         </div>
       </div>
     );
