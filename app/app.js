@@ -74,9 +74,6 @@ const App = React.createClass({
   },
 
   componentDidMount() {
-    $.get('http://138.251.207.124:4000/api/bus', () => {
-      console.log(arguments);
-    })
     // setInterval(() => {
     //   this.state.markers[0].position.lng -= 0.0005
     //   this.setState({ markers: this.state.markers });
