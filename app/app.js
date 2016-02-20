@@ -6,88 +6,64 @@ import $ from 'jquery';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import style from './../css/style.css';
 import { GoogleMapLoader, GoogleMap, Marker } from 'react-google-maps';
-// TODO Add Immutable
+import stops from './markers';
 
 const App = React.createClass({
   getInitialState() {
     return {
-      markers: [
-        {
-          position: {
-            lat: 56.3412378,
-            lng: -2.7953315,
-          },
-          key: "bus",
-          defaultAnimation: 2,
-          icon: 'bus.png'
-        },
-        {
-          position: {
-            lat: 56.3341776,
-            lng: -2.783473,
-          },
-          key: "albany",
-          defaultAnimation: 2
-        },
-        {
-          position: {
-            lat: 56.3415514 - 0.00022,
-            lng: -2.7951661 - 0.00054,
-          },
-          key: "library",
-          defaultAnimation: 2
-        },
-        {
-          position: {
-            lat: 56.3283371 - 0,
-            lng: -2.805844 - 0.0027,
-          },
-          key: "morrison",
-          defaultAnimation: 2
-        },
-        {
-          position: {
-            lat: 56.3355399 + 0.0002,
-            lng: -2.8208376 - 0.0007,
-          },
-          key: "dra",
-          defaultAnimation: 2
-        },
-        {
-          position: {
-            lat: 56.3404036 + 0.0004,
-            lng: -2.8101418 - 0.0037,
-          },
-          key: "agnes",
-          defaultAnimation: 2
-        },
-        {
-          position: {
-            lat: 56.3402233 + 0.00005,
-            lng: -2.7993857 - 0.0007,
-          },
-          key: "union",
-          defaultAnimation: 2
-        }
-      ]
+      currentTime: Date.now(),
+      markers: stops
     };
   },
 
   componentDidMount() {
-    // setInterval(() => {
-    //   this.state.markers[0].position.lng -= 0.0005
-    //   this.setState({ markers: this.state.markers });
-    // }, 1000);
+    this._getCurrentPosition();
+    this._getBusPosition();
+    setInterval(this._getBusPosition, 3000);
+  },
+
+  _getCurrentPosition() {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      this.state.markers.push({
+        position: {
+          lat: +pos.coords.latitude,
+          lng: +pos.coords.longitude
+        },
+        key: 'self',
+        defaultAnimation: 2,
+        icon: 'self.png'
+      });
+
+      this.setState({
+        markers: this.state.markers
+      });
+    }, () => {}, {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    });
+  },
+
+  _getBusPosition() {
+    $.ajax({
+      url: 'http://138.251.207.124:4000/api/bus',
+      success: (res) => {
+        this.state.markers[0].position.lat = res.lat;
+        this.state.markers[0].position.lng = res.lng;
+
+        this.setState({
+          currentTime: res.timestamp,
+          markers: this.state.markers
+        });
+      },
+      error: () => {}
+    });
   },
 
   _gmapsElement() {
     return (
       <GoogleMap defaultZoom={14} defaultCenter={{lat: 56.3360378, lng: -2.8023315}}>
-        {this.state.markers.map((marker, index) => {
-          return (
-            <Marker {...marker} />
-          );
-        })}
+        { this.state.markers.map((marker, index) => <Marker {...marker} />) }
       </GoogleMap>
     );
   },
@@ -96,9 +72,10 @@ const App = React.createClass({
     return (
       <div>
         <h1>St Night Bus</h1>
+        <h2>Update ed on {(new Date(this.state.currentTime * 1000)).toString()}</h2>
         <div className={style.mapWrapper}>
           <GoogleMapLoader containerElement={<div className={style.map} />} googleMapElement={this._gmapsElement()} />
-          </div>
+        </div>
       </div>
     );
   }
