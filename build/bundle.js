@@ -127,11 +127,11 @@
 	    _jquery2.default.ajax({
 	      url: 'http://138.251.207.124:4000/api/bus',
 	      success: function success(res) {
-	        _this2.state.markers[0].position.lat = res.lat;
-	        _this2.state.markers[0].position.lng = res.lng;
+	        _this2.state.markers[0].position.lat = +res.data.lat;
+	        _this2.state.markers[0].position.lng = +res.data.lng;
 
 	        _this2.setState({
-	          currentTime: res.timestamp,
+	          currentTime: res.data.timestamp,
 	          markers: _this2.state.markers
 	        });
 	      },
@@ -159,7 +159,7 @@
 	      _react2.default.createElement(
 	        'h2',
 	        null,
-	        'Update ed on ',
+	        'Updated on ',
 	        new Date(this.state.currentTime * 1000).toString()
 	      ),
 	      _react2.default.createElement(

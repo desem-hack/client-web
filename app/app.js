@@ -48,11 +48,11 @@ const App = React.createClass({
     $.ajax({
       url: 'http://138.251.207.124:4000/api/bus',
       success: (res) => {
-        this.state.markers[0].position.lat = res.lat;
-        this.state.markers[0].position.lng = res.lng;
+        this.state.markers[0].position.lat = +res.data.lat;
+        this.state.markers[0].position.lng = +res.data.lng;
 
         this.setState({
-          currentTime: res.timestamp,
+          currentTime: res.data.timestamp,
           markers: this.state.markers
         });
       },
@@ -72,7 +72,7 @@ const App = React.createClass({
     return (
       <div>
         <h1>St Night Bus</h1>
-        <h2>Update ed on {(new Date(this.state.currentTime * 1000)).toString()}</h2>
+        <h2>Updated on {(new Date(this.state.currentTime * 1000)).toString()}</h2>
         <div className={style.mapWrapper}>
           <GoogleMapLoader containerElement={<div className={style.map} />} googleMapElement={this._gmapsElement()} />
         </div>
