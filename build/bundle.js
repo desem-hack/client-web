@@ -79,72 +79,64 @@
 
 	var _reactGoogleMaps = __webpack_require__(213);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _markers = __webpack_require__(258);
 
-	// TODO Add Immutable
+	var _markers2 = _interopRequireDefault(_markers);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var App = _react2.default.createClass({
 	  displayName: 'App',
 	  getInitialState: function getInitialState() {
 	    return {
-	      markers: [{
-	        position: {
-	          lat: 56.3412378,
-	          lng: -2.7953315
-	        },
-	        key: "bus",
-	        defaultAnimation: 2,
-	        icon: 'bus.png'
-	      }, {
-	        position: {
-	          lat: 56.3341776,
-	          lng: -2.783473
-	        },
-	        key: "albany",
-	        defaultAnimation: 2
-	      }, {
-	        position: {
-	          lat: 56.3415514 - 0.00022,
-	          lng: -2.7951661 - 0.00054
-	        },
-	        key: "library",
-	        defaultAnimation: 2
-	      }, {
-	        position: {
-	          lat: 56.3283371 - 0,
-	          lng: -2.805844 - 0.0027
-	        },
-	        key: "morrison",
-	        defaultAnimation: 2
-	      }, {
-	        position: {
-	          lat: 56.3355399 + 0.0002,
-	          lng: -2.8208376 - 0.0007
-	        },
-	        key: "dra",
-	        defaultAnimation: 2
-	      }, {
-	        position: {
-	          lat: 56.3404036 + 0.0004,
-	          lng: -2.8101418 - 0.0037
-	        },
-	        key: "agnes",
-	        defaultAnimation: 2
-	      }, {
-	        position: {
-	          lat: 56.3402233 + 0.00005,
-	          lng: -2.7993857 - 0.0007
-	        },
-	        key: "union",
-	        defaultAnimation: 2
-	      }]
+	      currentTime: Date.now(),
+	      markers: _markers2.default
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    // setInterval(() => {
-	    //   this.state.markers[0].position.lng -= 0.0005
-	    //   this.setState({ markers: this.state.markers });
-	    // }, 1000);
+	    this._getCurrentPosition();
+	    this._getBusPosition();
+	    setInterval(this._getBusPosition, 3000);
+	  },
+	  _getCurrentPosition: function _getCurrentPosition() {
+	    var _this = this;
+
+	    navigator.geolocation.getCurrentPosition(function (pos) {
+	      _this.state.markers.push({
+	        position: {
+	          lat: +pos.coords.latitude,
+	          lng: +pos.coords.longitude
+	        },
+	        key: 'self',
+	        defaultAnimation: 2,
+	        icon: 'self.png'
+	      });
+
+	      _this.setState({
+	        markers: _this.state.markers
+	      });
+	    }, function () {}, {
+	      enableHighAccuracy: true,
+	      timeout: 5000,
+	      maximumAge: 0
+	    });
+	  },
+	  _getBusPosition: function _getBusPosition() {
+	    var _this2 = this;
+
+	    _jquery2.default.ajax({
+	      url: 'http://138.251.207.124:4000/api/bus',
+	      success: function success(res) {
+	        _this2.state.markers[0].position.lat = res.lat;
+	        _this2.state.markers[0].position.lng = res.lng;
+
+	        _this2.setState({
+	          currentTime: res.timestamp,
+	          markers: _this2.state.markers
+	        });
+	      },
+	      error: function error() {}
+	    });
 	  },
 	  _gmapsElement: function _gmapsElement() {
 	    return _react2.default.createElement(
@@ -163,6 +155,12 @@
 	        'h1',
 	        null,
 	        'St Night Bus'
+	      ),
+	      _react2.default.createElement(
+	        'h2',
+	        null,
+	        'Update ed on ',
+	        new Date(this.state.currentTime * 1000).toString()
 	      ),
 	      _react2.default.createElement(
 	        'div',
@@ -34169,7 +34167,7 @@
 
 
 	// module
-	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nbody {\n  font-family: 'Lato', sans-serif;\n  padding: 30px 20px;\n  background-color: #f1f1f1; }\n\nh1 {\n  font-family: 'Fjalla One', sans-serif;\n  text-align: center;\n  font-size: 24px; }\n\n.style__mapWrapper___3l2Ol {\n  margin: 20px 0;\n  padding: 10px;\n  box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.2);\n  background-color: #fff;\n  border-radius: 2px; }\n\n.style__map___3GaEk {\n  height: 400px;\n  width: 100%; }\n", ""]);
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nbody {\n  font-family: 'Lato', sans-serif;\n  padding: 30px 20px;\n  background-color: #f1f1f1; }\n\nh1 {\n  font-family: 'Fjalla One', sans-serif;\n  text-align: center;\n  font-size: 24px; }\n\nh2 {\n  text-align: center;\n  margin-top: 10px; }\n\n.style__mapWrapper___3l2Ol {\n  margin: 20px 0;\n  padding: 10px;\n  box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.2);\n  background-color: #fff;\n  border-radius: 2px; }\n\n.style__map___3GaEk {\n  height: 400px;\n  width: 100%; }\n", ""]);
 
 	// exports
 	exports.locals = {
@@ -38653,6 +38651,67 @@
 	});
 	exports["default"] = ["places_changed"];
 	module.exports = exports["default"];
+
+/***/ },
+/* 258 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = [{
+	  position: {
+	    lat: 0,
+	    lng: 0
+	  },
+	  key: 'bus',
+	  defaultAnimation: 2,
+	  icon: 'bus.png'
+	}, {
+	  position: {
+	    lat: 56.3341776,
+	    lng: -2.783473
+	  },
+	  key: 'albany',
+	  defaultAnimation: 2
+	}, {
+	  position: {
+	    lat: 56.3415514 - 0.00022,
+	    lng: -2.7951661 - 0.00054
+	  },
+	  key: 'library',
+	  defaultAnimation: 2
+	}, {
+	  position: {
+	    lat: 56.3283371 - 0,
+	    lng: -2.805844 - 0.0027
+	  },
+	  key: 'morrison',
+	  defaultAnimation: 2
+	}, {
+	  position: {
+	    lat: 56.3355399 + 0.0002,
+	    lng: -2.8208376 - 0.0007
+	  },
+	  key: 'dra',
+	  defaultAnimation: 2
+	}, {
+	  position: {
+	    lat: 56.3404036 + 0.0004,
+	    lng: -2.8101418 - 0.0037
+	  },
+	  key: 'agnes',
+	  defaultAnimation: 2
+	}, {
+	  position: {
+	    lat: 56.3402233 + 0.00005,
+	    lng: -2.7993857 - 0.0007
+	  },
+	  key: 'union',
+	  defaultAnimation: 2
+	}];
 
 /***/ }
 /******/ ]);
